@@ -4,22 +4,16 @@
 #define LINE_CHAR_LIMIT 150
 
 int getLines(char *path);
+void readLines(char *path, char *arr[]);
 
 int main(void) {
 
-    int lines = getLines("website/main.json");
-    printf("%d\n", lines);
+    char *main[getLines("website/main.json")];
 
-    char *main[lines];
-    FILE *fptr;
-    fptr = fopen("website/main.json", "r");
-    for(size_t x = 0; x < lines; x++) {
-        main[x] = malloc(sizeof(char) * LINE_CHAR_LIMIT);
-        fgets(main[x], LINE_CHAR_LIMIT, fptr);
+    readLines("website/main.json", main);
+    for(size_t x = 0; x < getLines("website/main.json"); x++) {
         printf("%s", main[x]);
     }
-    fclose(fptr);
-
     return 0;
 
 }
@@ -38,4 +32,17 @@ int getLines(char *file) {
 
     return lines;
 
+}
+
+void readLines(char *path, char *arr[]) {
+
+    int lines = getLines(path);
+    FILE *fptr;
+    fptr = fopen(path, "r");
+    for(size_t x = 0; x < lines; x++) {
+        arr[x] = malloc(sizeof(char) * LINE_CHAR_LIMIT);
+        fgets(arr[x], LINE_CHAR_LIMIT, fptr);
+    }
+    fclose(fptr);
+    
 }
