@@ -8,16 +8,19 @@ void readLines(char *path, char *arr[]);
 void changeTitle(char *title, char *arr[]);
 void changeMotd(char *motd, char *arr[]);
 void changeBgColor(char *color, char *arr[]);
+void writeLines(char *path, char *arr[]);
 
 int main(void) {
 
     char *main[getLines("website/main.json")];
     
     readLines("website/main.json", main);
-
     for(size_t x = 0; x < getLines("website/main.json"); x++) {
         printf("%s", main[x]);
     }
+
+    writeLines("website/main.json", main);
+
     return 0;
 
 }
@@ -61,4 +64,16 @@ void changeMotd(char *motd, char *arr[]) {
 
 void changeBgColor(char *color, char *arr[]) {
     sprintf(arr[3], "\t\"bgColor\":\"%s\"\n", color);
+}
+
+void writeLines(char *path, char *arr[]) {
+
+    int lines = getLines(path);
+    FILE *fptr;
+    fptr = fopen(path, "w");
+    for(size_t x = 0; x < lines; x++) {
+        fputs(arr[x], fptr);
+    }
+    fclose(fptr);
+
 }
