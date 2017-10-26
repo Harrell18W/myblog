@@ -5,12 +5,16 @@
 
 int getLines(char *path);
 void readLines(char *path, char *arr[]);
+void changeTitle(char *title, char *arr[]);
+void changeMotd(char *motd, char *arr[]);
+void changeBgColor(char *color, char *arr[]);
 
 int main(void) {
 
     char *main[getLines("website/main.json")];
-
+    
     readLines("website/main.json", main);
+
     for(size_t x = 0; x < getLines("website/main.json"); x++) {
         printf("%s", main[x]);
     }
@@ -45,4 +49,16 @@ void readLines(char *path, char *arr[]) {
     }
     fclose(fptr);
     
+}
+
+void changeTitle(char *title, char *arr[]) {
+    sprintf(arr[1], "\t\"title\":\"%s\",\n", title);
+}
+
+void changeMotd(char *motd, char *arr[]) {
+    sprintf(arr[2], "\t\"motd\":\"%s\",\n", motd);
+}
+
+void changeBgColor(char *color, char *arr[]) {
+    sprintf(arr[3], "\t\"bgColor\":\"%s\"\n", color);
 }
