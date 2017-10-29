@@ -10,25 +10,25 @@ void readLines(char *path, char *arr[], int readTo);
 void changeTitle(char *title, char *arr[]);
 void changeMotd(char *motd, char *arr[]);
 void changeBgColor(char *color, char *arr[]);
-void writeLines(char *path, char *extra, int writeTo, char *arr[]);
-void makePost(char *title, char *timestamp, char *content, char *arr[]);
+void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines);
+void makePost(char *title, char *timestamp, char *content, char *arr[], int *numLines);
 
 int main(void) {
 
     char *main[getLines(MAIN)];
     char *posts[getLines(POSTS)];
+    int mainLines = getLines(MAIN);
+    int postsLines = getLines(POSTS);
     
     readLines(MAIN, main, 0);
     readLines(POSTS, posts, 2);
-    //makePost("fuck", "tits", "hooker-fucker", posts);
-    /*
+    makePost("yeet", "neat", "greet", posts, &postsLines);
     for(size_t x = 0; x < getLines(POSTS) - 2; x++) {
         printf("%s", posts[x]);
     }
-    */
 
-    writeLines(MAIN, "", 0, main);
-    writeLines(POSTS, "\t}\n]", 2, posts);
+    writeLines(MAIN, "", 0, main, mainLines);
+    //writeLines(POSTS, "\t}\n]", 2, posts, postsLines);
 
     return 0;
 
@@ -75,15 +75,12 @@ void changeBgColor(char *color, char *arr[]) {
     sprintf(arr[3], "\t\"bgColor\":\"%s\"\n", color);
 }
 
-void writeLines(char *path, char *extra, int writeTo, char *arr[]) {
+void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines) {
 
-    int lines = getLines(path);
     FILE *fptr;
     fptr = fopen(path, "w");
     for(size_t x = 0; x < lines - writeTo; x++) {
-        printf("%d\n", x);
         fputs(arr[x], fptr);
-        printf("%s", arr[x]);
     }
     if(extra != 4197980) {
         fputs(extra, fptr); 
@@ -92,24 +89,18 @@ void writeLines(char *path, char *extra, int writeTo, char *arr[]) {
 
 }
 
-void makePost(char *title, char *timestamp, char *content, char *arr[]) {
+void makePost(char *title, char *timestamp, char *content, char *arr[], int *numLines) {
 
-    int lines = getLines(POSTS);
-    char *post;
-    char *titleLine;
-    char *timestampLine;
-    char *contentLine;
-    sprintf(titleLine, "\t\t\"title\":\"%s\",\n", title);
-    printf("%s", titleLine);
-    sprintf(timestampLine, "\t\t\"timestamp\":\"%s\",\n", timestamp);
-    puts("yeet");
-    sprintf(contentLine, "\t\t\"content\":\"%s\",\n", content);
-    arr[lines - 2] = "\t},\n";
-    arr[lines - 1] = "\t{\n";
-    arr[lines] = titleLine;
-    arr[lines + 1] = timestampLine;
-    arr[lines + 2] = contentLine;
-    arr[lines + 3] = "\t}\n";
-    arr[lines + 4] = "]";
+    //TODO: add part to prepend existing posts
+    writeLines(POSTS, "", 2, arr, *numLines);
+    FILE *fptr = fopen(POSTS, "w");
+    fputs("\t},\n", fptr);
+    fprintf(fptr, "\t\t\"title\":\"%s\",\n", title);
+    fprintf(fptr, "\t\t\"timestamp\":\"%s\",\n", timestamp);
+    fprintf(fptr, "\t\t\"content\":\"%s\"\n", content);
+    fputs("\t}\n]", fptr);
+    fclose(fptr);
+    readLines(POSTS, arr, 2);
+    *numLines = *numLines + 5;
 
 }
