@@ -11,21 +11,23 @@ void changeTitle(char *title, char *arr[]);
 void changeMotd(char *motd, char *arr[]);
 void changeBgColor(char *color, char *arr[]);
 void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines);
-void makePost(char *title, char *timestamp, char *content, char *arr[], int *numLines);
+void makePost(char *title, char *timestamp, char *content);
 
 int main(void) {
 
     char *main[getLines(MAIN)];
-    char *posts[getLines(POSTS)];
+    //char *posts[getLines(POSTS)];
     int mainLines = getLines(MAIN);
     int postsLines = getLines(POSTS);
     
     readLines(MAIN, main, 0);
-    readLines(POSTS, posts, 2);
-    makePost("yeet", "neat", "greet", posts, &postsLines);
+    //readLines(POSTS, posts, 2);
+    makePost("yeet", "neat", "greet");
+    /*
     for(size_t x = 0; x < getLines(POSTS) - 2; x++) {
         printf("%s", posts[x]);
     }
+    */
 
     writeLines(MAIN, "", 0, main, mainLines);
     //writeLines(POSTS, "\t}\n]", 2, posts, postsLines);
@@ -89,18 +91,27 @@ void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines) {
 
 }
 
-void makePost(char *title, char *timestamp, char *content, char *arr[], int *numLines) {
+void makePost(char *title, char *timestamp, char *content) {
 
     //TODO: add part to prepend existing posts
-    writeLines(POSTS, "", 2, arr, *numLines);
-    FILE *fptr = fopen(POSTS, "w");
-    fputs("\t},\n", fptr);
+    char *posts[getLines(POSTS)];
+    int lines = getLines(POSTS);
+    FILE *fptr = fopen(POSTS, "r");
+    for(size_t x = 0; x < lines - 2; x++) {
+        posts[x] = calloc(lines, sizeof(char) * LINE_CHAR_LIMIT);
+        fgets(posts[x], LINE_CHAR_LIMIT, fptr);
+    }
+    fclose(fptr);
+    FILE *fptr2 = fopen(POSTS, "w");
+    for(size_t x = 0; x < lines - 2; x++) {
+        fprintf(fptr2, "%s", posts[x]);
+        printf("%s", posts[x]);
+    }
+    fputs("\t},\n\t{\n", fptr);
     fprintf(fptr, "\t\t\"title\":\"%s\",\n", title);
     fprintf(fptr, "\t\t\"timestamp\":\"%s\",\n", timestamp);
     fprintf(fptr, "\t\t\"content\":\"%s\"\n", content);
     fputs("\t}\n]", fptr);
     fclose(fptr);
-    readLines(POSTS, arr, 2);
-    *numLines = *numLines + 5;
 
 }
