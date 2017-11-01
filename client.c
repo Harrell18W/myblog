@@ -42,11 +42,22 @@ int main(void) {
     if(command == 0) {
         puts("What would you like the new title to be? Max size is 256 characters");
         char *title = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-        scanf("%[^\n]%*c", title);
-        int bufferSize = sizeof(title);
+        //scanf("%[^\n]%*c", title);
+        gets(title);
+        gets(title);
         send(networkSocket, &command, sizeof(command), 0);
-        send(networkSocket, &bufferSize, sizeof(int), 0);
         send(networkSocket, title, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+        free(title);
+    } else if(command == 1) {
+        puts("What would you like the new message of the day to be? Max size is 256 characters");
+        char *motd = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+        gets(motd);
+        gets(motd);
+        send(networkSocket, &command, sizeof(command), 0);
+        send(networkSocket, motd, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+        free(motd);
     }
+
+    close(networkSocket);
 
 }

@@ -49,19 +49,16 @@ int main(void) {
 
         if(command == 0) {
             char *title = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-            int bufferSize = 0;
-            recv(clientSocket, &bufferSize, sizeof(int), 0);
             recv(clientSocket, title, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
-            printf("bufferSize: %d\n", bufferSize);
-            printf("other thing: %d", sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
             printf("User is changing blog title to: %s\n", title);
             changeTitle(title, main);
             free(title);
         } else if(command == 1) {
-            char motd[256];
-            recv(clientSocket, &motd, sizeof(motd), 0);
+            char *motd = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+            recv(clientSocket, motd, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
             printf("User is changing blog motd to: %s\n", motd);
             changeMotd(motd, main);
+            free(motd);
         }
 
         writeLines(MAIN, "", 0, main, mainLines);
