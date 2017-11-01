@@ -22,7 +22,7 @@ void readLines(char *path, char *arr[], int readTo);
 void changeTitle(char *title, char *arr[]);
 void changeMotd(char *motd, char *arr[]);
 void changeBgColor(char *color, char *arr[]);
-void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines);
+void writeLines(char *path, int writeTo, char *arr[], int lines);
 void makePost(char *title, char *timestamp, char *content);
 
 int main(void) {
@@ -72,7 +72,6 @@ int main(void) {
             char *postContent = malloc(sizeof(char) * LINE_CHAR_LIMIT);
             time_t currTime = time(NULL);
             char *currTimestamp = asctime(localtime(&currTime));
-            //strncpy(currTimestamp, currTimestamp, 23);
             sprintf(currTimestamp, "%.*s", 24, currTimestamp);
             recv(clientSocket, postTitle, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
             recv(clientSocket, postContent, sizeof(char) * LINE_CHAR_LIMIT, 0);
@@ -84,7 +83,7 @@ int main(void) {
             free(postContent);
         }
 
-        writeLines(MAIN, "", 0, main, mainLines);
+        writeLines(MAIN, 0, main, mainLines);
 
     }
 
@@ -133,15 +132,12 @@ void changeBgColor(char *color, char *arr[]) {
     sprintf(arr[3], "\t\"bgColor\":\"%s\"\n", color);
 }
 
-void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines) {
+void writeLines(char *path, int writeTo, char *arr[], int lines) {
 
     FILE *fptr;
     fptr = fopen(path, "w");
     for(size_t x = 0; x < lines - writeTo; x++) {
         fputs(arr[x], fptr);
-    }
-    if(extra != 4197980) {
-        fputs(extra, fptr); 
     }
     fclose(fptr);
 
@@ -149,7 +145,6 @@ void writeLines(char *path, char *extra, int writeTo, char *arr[], int lines) {
 
 void makePost(char *title, char *timestamp, char *content) {
 
-    //TODO: add part to prepend existing posts
     char *posts[getLines(POSTS)];
     int lines = getLines(POSTS);
     FILE *fptr = fopen(POSTS, "r");
@@ -161,7 +156,6 @@ void makePost(char *title, char *timestamp, char *content) {
     FILE *fptr2 = fopen(POSTS, "w");
     for(size_t x = 0; x < lines - 2; x++) {
         fprintf(fptr2, "%s", posts[x]);
-        //printf("%s", posts[x]);
     }
     fputs("\t},\n\t{\n", fptr);
     fprintf(fptr, "\t\t\"title\":\"%s\",\n", title);
