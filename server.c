@@ -10,6 +10,8 @@
 #define PORT 9002
 
 #define LINE_CHAR_LIMIT 1000
+#define TITLE_MOTD_CHAR_LIMIT 256
+#define POST_CHAR_LIMIT 1000
 #define MAIN "website/main.json"
 #define POSTS "website/posts.json"
 
@@ -41,21 +43,28 @@ int main(void) {
         printf("command: %d\n", command);
 
         char *main[getLines(MAIN)];
-        //char *posts[getLines(POSTS)];
         int mainLines = getLines(MAIN);
-        int postsLines = getLines(POSTS);
         
         readLines(MAIN, main, 0);
-        //readLines(POSTS, posts, 2);
-        makePost("yeet", "neat", "greet");
-        /*
-        for(size_t x = 0; x < getLines(POSTS) - 2; x++) {
-            printf("%s", posts[x]);
+
+        if(command == 0) {
+            char *title = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+            int bufferSize = 0;
+            recv(clientSocket, &bufferSize, sizeof(int), 0);
+            recv(clientSocket, title, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+            printf("bufferSize: %d\n", bufferSize);
+            printf("other thing: %d", sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+            printf("User is changing blog title to: %s\n", title);
+            changeTitle(title, main);
+            free(title);
+        } else if(command == 1) {
+            char motd[256];
+            recv(clientSocket, &motd, sizeof(motd), 0);
+            printf("User is changing blog motd to: %s\n", motd);
+            changeMotd(motd, main);
         }
-        */
 
         writeLines(MAIN, "", 0, main, mainLines);
-        //writeLines(POSTS, "\t}\n]", 2, posts, postsLines);
 
     }
 
@@ -132,7 +141,7 @@ void makePost(char *title, char *timestamp, char *content) {
     FILE *fptr2 = fopen(POSTS, "w");
     for(size_t x = 0; x < lines - 2; x++) {
         fprintf(fptr2, "%s", posts[x]);
-        printf("%s", posts[x]);
+        //printf("%s", posts[x]);
     }
     fputs("\t},\n\t{\n", fptr);
     fprintf(fptr, "\t\t\"title\":\"%s\",\n", title);

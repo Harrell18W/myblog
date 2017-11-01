@@ -9,6 +9,10 @@
 #define SERVER_IP "45.55.196.222"
 #define PORT 9002
 
+#define LINE_CHAR_LIMIT 1000
+#define TITLE_MOTD_CHAR_LIMIT 256
+#define POST_CHAR_LIMIT 1000
+
 int main(void) {
 
     int command = -1;
@@ -35,6 +39,14 @@ int main(void) {
         return 0;
     }
 
-    send(networkSocket, &command, sizeof(command), 0);
+    if(command == 0) {
+        puts("What would you like the new title to be? Max size is 256 characters");
+        char *title = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+        scanf("%[^\n]%*c", title);
+        int bufferSize = sizeof(title);
+        send(networkSocket, &command, sizeof(command), 0);
+        send(networkSocket, &bufferSize, sizeof(int), 0);
+        send(networkSocket, title, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+    }
 
 }
