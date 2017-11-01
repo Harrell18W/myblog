@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -42,36 +43,40 @@ int main(void) {
     if(command == 0) {
         puts("What would you like the new title to be? Max size is 256 characters");
         char *title = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-        //scanf("%[^\n]%*c", title);
-        gets(title);
-        gets(title);
+        fgets(title, TITLE_MOTD_CHAR_LIMIT, stdin);
+        fgets(title, TITLE_MOTD_CHAR_LIMIT, stdin);
+        strtok(title, "\n");
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, title, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         free(title);
     } else if(command == 1) {
         puts("What would you like the new message of the day to be? Max size is 256 characters");
         char *motd = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-        gets(motd);
-        gets(motd);
+        fgets(motd, TITLE_MOTD_CHAR_LIMIT, stdin);
+        fgets(motd, TITLE_MOTD_CHAR_LIMIT, stdin);
+        strtok(motd, "\n");
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, motd, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         free(motd);
     } else if(command == 2) {
         puts("What would you like the new background color to be? Please enter your color in hexadecimal format, e.g. #00FF00");
         char *rgb = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-        gets(rgb);
-        gets(rgb);
+        fgets(rgb, TITLE_MOTD_CHAR_LIMIT, stdin);
+        fgets(rgb, TITLE_MOTD_CHAR_LIMIT, stdin);
+        strtok(rgb, "\n");
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, rgb, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         free(rgb);
     } else if(command == 3) {
         puts("What would you like the title of your post to be? Max size is 256 characters");
         char *postTitle = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
-        gets(postTitle);
-        gets(postTitle);
+        fgets(postTitle, TITLE_MOTD_CHAR_LIMIT, stdin);
+        fgets(postTitle, TITLE_MOTD_CHAR_LIMIT, stdin);
+        strtok(postTitle, "\n");
         puts("Please enter the text of your post. Max size is 1000 characters");
         char *postContent = malloc(sizeof(char) * LINE_CHAR_LIMIT);
-        gets(postContent);
+        fgets(postContent, LINE_CHAR_LIMIT, stdin);
+        strtok(postContent, "\n");
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, postTitle, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         send(networkSocket, postContent, sizeof(char) * LINE_CHAR_LIMIT, 0);
