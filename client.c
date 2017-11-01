@@ -64,6 +64,19 @@ int main(void) {
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, rgb, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         free(rgb);
+    } else if(command == 3) {
+        puts("What would you like the title of your post to be? Max size is 256 characters");
+        char *postTitle = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+        gets(postTitle);
+        gets(postTitle);
+        puts("Please enter the text of your post. Max size is 1000 characters");
+        char *postContent = malloc(sizeof(char) * LINE_CHAR_LIMIT);
+        gets(postContent);
+        send(networkSocket, &command, sizeof(command), 0);
+        send(networkSocket, postTitle, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+        send(networkSocket, postContent, sizeof(char) * LINE_CHAR_LIMIT, 0);
+        free(postTitle);
+        free(postContent);
     }
 
     close(networkSocket);

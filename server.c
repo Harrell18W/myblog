@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -65,6 +67,21 @@ int main(void) {
             printf("User is changing blog background color to: %s\n", rgb);
             changeBgColor(rgb, main);
             free(rgb);
+        } else if(command == 3) {
+            char *postTitle = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+            char *postContent = malloc(sizeof(char) * LINE_CHAR_LIMIT);
+            time_t currTime = time(NULL);
+            char *currTimestamp = asctime(localtime(&currTime));
+            //strncpy(currTimestamp, currTimestamp, 23);
+            sprintf(currTimestamp, "%.*s", 24, currTimestamp);
+            recv(clientSocket, postTitle, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+            recv(clientSocket, postContent, sizeof(char) * LINE_CHAR_LIMIT, 0);
+            puts("User is making a new post");
+            printf("Title: %s\n", postTitle);
+            printf("Content: %s\n", postContent);
+            makePost(postTitle, currTimestamp, postContent);
+            free(postTitle);
+            free(postContent);
         }
 
         writeLines(MAIN, "", 0, main, mainLines);
