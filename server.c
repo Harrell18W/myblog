@@ -59,6 +59,12 @@ int main(void) {
             printf("User is changing blog motd to: %s\n", motd);
             changeMotd(motd, main);
             free(motd);
+        } else if(command == 2) {
+            char *rgb = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+            recv(clientSocket, rgb, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+            printf("User is changing blog background color to: %s\n", rgb);
+            changeBgColor(rgb, main);
+            free(rgb);
         }
 
         writeLines(MAIN, "", 0, main, mainLines);

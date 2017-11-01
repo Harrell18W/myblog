@@ -56,6 +56,14 @@ int main(void) {
         send(networkSocket, &command, sizeof(command), 0);
         send(networkSocket, motd, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
         free(motd);
+    } else if(command == 2) {
+        puts("What would you like the new background color to be? Please enter your color in hexadecimal format, e.g. #00FF00");
+        char *rgb = malloc(sizeof(char) * TITLE_MOTD_CHAR_LIMIT);
+        gets(rgb);
+        gets(rgb);
+        send(networkSocket, &command, sizeof(command), 0);
+        send(networkSocket, rgb, sizeof(char) * TITLE_MOTD_CHAR_LIMIT, 0);
+        free(rgb);
     }
 
     close(networkSocket);
