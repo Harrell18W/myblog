@@ -2,20 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 
-#define SERVER_IP "45.55.196.222"
 #define PORT 9002
 
 #define LINE_CHAR_LIMIT 1000
 #define TITLE_MOTD_CHAR_LIMIT 256
 #define POST_CHAR_LIMIT 1000
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
+    if(argc != 2) {
+        puts("Please give the server IP address as your first argument. For localhost, use \"lh\"");
+        return 0;
+    }
     int command = -1;
     puts("What would you like to do?");
     while(command < 0 || command > 3) {
@@ -33,7 +37,10 @@ int main(void) {
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(PORT);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    if(strcmp(argv[1], "lh"))
+        serverAddress.sin_addr.s_addr = INADDR_ANY;
+    else
+        serverAddress.sin_addr.s_addr = inet_addr(argv[1]);
     int connectionStatus = connect(networkSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
     if(connectionStatus < 0) {
         puts("There was an error connecting to the server");

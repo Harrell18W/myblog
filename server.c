@@ -8,7 +8,6 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-#define CLIENT_IP "204.85.24.5"
 #define PORT 9002
 
 #define LINE_CHAR_LIMIT 1000
